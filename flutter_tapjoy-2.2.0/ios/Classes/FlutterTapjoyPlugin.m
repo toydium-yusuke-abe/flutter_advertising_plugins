@@ -25,16 +25,16 @@
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSDictionary *methodDictionary = @{
-        @"connectTapJoy": NSStringFromSelector(@selector(connectTapJoy:arguments:result:)),
-        @"setUserID": NSStringFromSelector(@selector(setUserID:arguments:result:)),
-        @"isConnected": NSStringFromSelector(@selector(isConnected:arguments:result:)),
-        @"createPlacement": NSStringFromSelector(@selector(createPlacement:arguments:result:)),
-        @"requestContent": NSStringFromSelector(@selector(requestContent:arguments:result:)),
-        @"showPlacement": NSStringFromSelector(@selector(showPlacement:arguments:result:)),
-        @"getCurrencyBalance": NSStringFromSelector(@selector(getCurrencyBalance:arguments:result:)),
-        @"spendCurrency": NSStringFromSelector(@selector(spendCurrency:arguments:result:)),
-        @"awardCurrency": NSStringFromSelector(@selector(awardCurrency:arguments:result:)),
-        @"getATT": NSStringFromSelector(@selector(getATT:arguments:result:))
+        @"connectTapJoy": NSStringFromSelector(@selector(connectTapJoy:result:)),
+        @"setUserID": NSStringFromSelector(@selector(setUserID:result:)),
+        @"isConnected": NSStringFromSelector(@selector(isConnected:result:)),
+        @"createPlacement": NSStringFromSelector(@selector(createPlacement:result:)),
+        @"requestContent": NSStringFromSelector(@selector(requestContent:result:)),
+        @"showPlacement": NSStringFromSelector(@selector(showPlacement:result:)),
+        @"getCurrencyBalance": NSStringFromSelector(@selector(getCurrencyBalance:result:)),
+        @"spendCurrency": NSStringFromSelector(@selector(spendCurrency:result:)),
+        @"awardCurrency": NSStringFromSelector(@selector(awardCurrency:result:)),
+        @"getATT": NSStringFromSelector(@selector(getATT:result:))
     };
     
     SEL methodSelector = NSSelectorFromString(methodDictionary[call.method]);
@@ -54,7 +54,7 @@
 
 - (void)setUserID:(NSDictionary *)dict result:(FlutterResult)result {
     NSString *userID = dict[@"userID"];
-    [Tapjoy setUserID:userID];
+    [Tapjoy setUserIDWithCompletion: userID completion:nil];
 }
 
 - (void)isConnected:(NSDictionary *)dict result:(FlutterResult)result {

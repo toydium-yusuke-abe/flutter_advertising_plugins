@@ -2,6 +2,7 @@ group 'com.anavrinapps.flutter_tapjoy'
 version '1.0'
 
 buildscript {
+    ext.kotlin_version = '1.9.0'
     repositories {
         google()
         mavenCentral()
@@ -24,16 +25,16 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 23
     }
     lintOptions {
         disable 'InvalidPackage'
     }
      dependencies {
-        implementation 'com.tapjoy:tapjoy-android-sdk:13.0.1'
+        implementation 'com.tapjoy:tapjoy-android-sdk:14.0.1'
         implementation 'com.google.android.gms:play-services-ads-identifier:17.1.0'
     }
 }

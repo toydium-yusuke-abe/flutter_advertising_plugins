@@ -58,8 +58,19 @@ public class FlutterTapjoyPlugin implements FlutterPlugin, MethodCallHandler, Ac
                     }
 
                     @Override
-                    public void onConnectFailure() {
-                        channel.invokeMethod("connectionFail", null);
+                    public void onConnectFailure(int code, String errorMessage) {
+                        Hashtable<String, Object> error = new Hashtable<>();
+                        error.put("code", code);
+                        error.put("error", errorMessage);
+                        channel.invokeMethod("connectionFail", error);
+                    }
+
+                    @Override
+                    public void onConnectWarning(int code, String errorMessage) {
+                        Hashtable<String, Object> error = new Hashtable<>();
+                        error.put("code", code);
+                        error.put("error", errorMessage);
+                        channel.invokeMethod("connectionWarning", error);
                     }
                 });
                 result.success(Tapjoy.isConnected());
@@ -75,7 +86,7 @@ public class FlutterTapjoyPlugin implements FlutterPlugin, MethodCallHandler, Ac
                 break;
             case "setUserID":
                 final String userID = call.argument("userID");
-                Tapjoy.setUserID(userID);
+                Tapjoy.setUserID(userID, null);
                 break;
             case "isConnected":
                 result.success(Tapjoy.isConnected());

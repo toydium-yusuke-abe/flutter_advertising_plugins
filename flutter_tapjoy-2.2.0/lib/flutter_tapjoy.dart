@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 
@@ -29,9 +30,11 @@ typedef TJPlacementHandler = void Function(
   String? placementName,
   String? error,
 );
-
 typedef TJConnectionResultHandler = void Function(
-    TJConnectionResult connectionResult);
+  TJConnectionResult connectionResult,
+  int? code,
+  String? error,
+);
 typedef TJSpendCurrencyHandler = void Function(
     String? currencyName, int? amount, String? error);
 typedef TJAwardCurrencyHandler = void Function(
@@ -118,15 +121,15 @@ class TapJoyPlugin {
   }
 
   Future<void> addPlacement(TJPlacement tjPlacement) async {
-  placements.add(tjPlacement);
-  await _createPlacement(tjPlacement);
-}
+    placements.add(tjPlacement);
+    await _createPlacement(tjPlacement);
+  }
 
-Future<void> setUserID({required String userID}) async {
-  await _channel.invokeMethod('setUserID', <String, dynamic>{
-    'userID': userID,
-  });
-}
+  Future<void> setUserID({required String userID}) async {
+    await _channel.invokeMethod('setUserID', <String, dynamic>{
+      'userID': userID,
+    });
+  }
 
   Future<void> _createPlacement(TJPlacement tjPlacement) async {
     await _channel.invokeMethod('createPlacement', {
@@ -138,14 +141,32 @@ Future<void> setUserID({required String userID}) async {
     switch (call.method) {
       case 'connectionSuccess':
         if (_connectionResultHandler != null) {
-          _connectionResultHandler!(TJConnectionResult.connected);
+          _connectionResultHandler!(
+            TJConnectionResult.connected,
+            null,
+            null,
+          );
         }
         break;
       case 'connectionFail':
         if (_connectionResultHandler != null) {
-          _connectionResultHandler!(TJConnectionResult.disconnected);
+          _connectionResultHandler!(
+            TJConnectionResult.disconnected,
+            call.arguments['code'],
+            call.arguments['error'],
+          );
         }
         break;
+      case 'connectionWarning':
+        if (_connectionResultHandler != null) {
+          _connectionResultHandler!(
+            TJConnectionResult.disconnected,
+            call.arguments['code'],
+            call.arguments['error'],
+          );
+        }
+        break;
+
       case 'requestSuccess':
         final String? placementName = call.arguments['placementName'];
         final TJPlacement? tjPlacement = placements
@@ -248,42 +269,42 @@ Future<void> setUserID({required String userID}) async {
     }
   }
 
-Future<void> getCurrencyBalance() async {
-await _channel.invokeMethod('getCurrencyBalance');
-}
+  Future<void> getCurrencyBalance() async {
+    await _channel.invokeMethod('getCurrencyBalance');
+  }
 
-Future<void> spendCurrency(int amount) async {
-await _channel.invokeMethod('spendCurrency', {
-'amount': amount,
-});
-}
+  Future<void> spendCurrency(int amount) async {
+    await _channel.invokeMethod('spendCurrency', {
+      'amount': amount,
+    });
+  }
 
-Future<void> awardCurrency(int amount) async {
-await _channel.invokeMethod('awardCurrency', {
-'amount': amount,
-});
-}
+  Future<void> awardCurrency(int amount) async {
+    await _channel.invokeMethod('awardCurrency', {
+      'amount': amount,
+    });
+  }
 }
 
 class TJPlacement {
-final String name;
-TJPlacementHandler? handler;
+  final String name;
+  TJPlacementHandler? handler;
 
-void setHandler(TJPlacementHandler myHandler) {
-handler = myHandler;
-}
+  void setHandler(TJPlacementHandler myHandler) {
+    handler = myHandler;
+  }
 
-TJPlacement({required this.name});
+  TJPlacement({required this.name});
 
-Future<void> requestContent() async {
-await TapJoyPlugin.shared._channel.invokeMethod('requestContent', {
-'placementName': name,
-});
-}
+  Future<void> requestContent() async {
+    await TapJoyPlugin.shared._channel.invokeMethod('requestContent', {
+      'placementName': name,
+    });
+  }
 
-Future<void> showPlacement() async {
-await TapJoyPlugin.shared._channel.invokeMethod('showPlacement', {
-'placementName': name,
-});
-}
+  Future<void> showPlacement() async {
+    await TapJoyPlugin.shared._channel.invokeMethod('showPlacement', {
+      'placementName': name,
+    });
+  }
 }

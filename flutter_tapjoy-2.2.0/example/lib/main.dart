@@ -54,11 +54,14 @@ class MyAppState extends State<MyApp> {
   }
 
   // connection result handler
-  void _connectionResultHandler(TJConnectionResult result) {
+  void _connectionResultHandler(
+    TJConnectionResult result,
+    int? code,
+    String? error,
+  ) {
     setState(() {
-      connectionState = result == TJConnectionResult.connected
-          ? "Connected"
-          : "Disconnected";
+      connectionState =
+          result == TJConnectionResult.connected ? "Connected" : "Disconnected";
     });
   }
 
@@ -80,8 +83,7 @@ class MyAppState extends State<MyApp> {
           contentStateText = "Content Did Disappear for placement: $name";
           break;
         case TJContentState.contentRequestSuccess:
-          contentStateText =
-              "Content Request Success for placement: $name";
+          contentStateText = "Content Request Success for placement: $name";
           break;
         case TJContentState.contentRequestFail:
           contentStateText =
