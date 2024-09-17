@@ -172,10 +172,11 @@ class TapJoyPlugin {
         final TJPlacement? tjPlacement = placements
             .firstWhereOrNull((element) => element.name == placementName);
 
-        if (tjPlacement != null && tjPlacement.handler != null) {
-          tjPlacement.handler!(
-              TJContentState.contentRequestSuccess, placementName, null);
-        }
+        tjPlacement?.handler?.call(
+          TJContentState.contentRequestSuccess,
+          placementName,
+          null,
+        );
         break;
       case 'requestFail':
         final String? placementName = call.arguments['placementName'];
@@ -183,10 +184,11 @@ class TapJoyPlugin {
             .firstWhereOrNull((element) => element.name == placementName);
         final String? error = call.arguments['error'];
 
-        if (tjPlacement != null && tjPlacement.handler != null) {
-          tjPlacement.handler!(
-              TJContentState.contentRequestFail, placementName, error);
-        }
+        tjPlacement?.handler?.call(
+          TJContentState.contentRequestFail,
+          placementName,
+          error,
+        );
         break;
       case 'contentReady':
         final String? placementName = call.arguments['placementName'];
