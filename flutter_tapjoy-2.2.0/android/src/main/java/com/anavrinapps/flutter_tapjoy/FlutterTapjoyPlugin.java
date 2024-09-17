@@ -153,7 +153,12 @@ public class FlutterTapjoyPlugin implements FlutterPlugin, MethodCallHandler, Ac
                 final String placementNameRequest = call.argument("placementName");
                 final TJPlacement tjPlacementRequest = placements.get(placementNameRequest);
                 if (tjPlacementRequest != null) {
-                    tjPlacementRequest.requestContent();
+                    try {
+                        tjPlacementRequest.requestContent();
+                    }
+                    catch (final Exception e) {
+                        result.error("Error", e.getMessage(), null);
+                    }
                 } else {
                     final Hashtable<String, Object> myMap = new Hashtable<>();
                     myMap.put("placementName", placementNameRequest);
@@ -162,10 +167,15 @@ public class FlutterTapjoyPlugin implements FlutterPlugin, MethodCallHandler, Ac
                 }
                 break;
             case "showPlacement":
-                final String placementNameShow = call.argument("placementName");
-                final TJPlacement tjPlacementShow = placements.get(placementNameShow);
-                assert tjPlacementShow != null;
-                tjPlacementShow.showContent();
+                try {
+                    final String placementNameShow = call.argument("placementName");
+                    final TJPlacement tjPlacementShow = placements.get(placementNameShow);
+                    assert tjPlacementShow != null;
+                    tjPlacementShow.showContent();
+                }
+                catch (final Exception e) {
+                    result.error("Error", e.getMessage(), null);
+                }
                 break;
             case "getCurrencyBalance":
                 Tapjoy.getCurrencyBalance(new TJGetCurrencyBalanceListener() {
