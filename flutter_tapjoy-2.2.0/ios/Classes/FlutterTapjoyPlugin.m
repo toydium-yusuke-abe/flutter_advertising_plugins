@@ -17,10 +17,16 @@
     
     instance.flutterViewController = [[FlutterViewController alloc] initWithProject:nil nibName:nil bundle:nil];
     [Tapjoy setDefaultViewController:instance.flutterViewController];
-    
+
+    instance.placements = [[NSMutableDictionary alloc] init];
+
     [[NSNotificationCenter defaultCenter] addObserver:instance selector:@selector(tjcConnectSuccess:) name:TJC_CONNECT_SUCCESS object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:instance selector:@selector(tjcConnectFail:) name:TJC_CONNECT_FAILED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:instance selector:@selector(showEarnedCurrencyAlert:) name:TJC_CURRENCY_EARNED_NOTIFICATION object:nil];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
@@ -185,7 +191,7 @@
 
 - (void)contentDidDisappear:(TJPlacement*)placement {
     NSDictionary *args = @{ @"placementName" : placement.placementName };
-    [self.tapJoyChannel invokeMethod:@"contentDidDisappear" arguments:args];
+    [self.tapJoyChannel invokeMethod:@"contentDidDisAppear" arguments:args];
 }
 
 - (void)addPlacement:(NSString*)placementName {
