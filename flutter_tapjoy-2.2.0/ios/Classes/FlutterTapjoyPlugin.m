@@ -22,6 +22,7 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:instance selector:@selector(tjcConnectSuccess:) name:TJC_CONNECT_SUCCESS object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:instance selector:@selector(tjcConnectFail:) name:TJC_CONNECT_FAILED object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:instance selector:@selector(tjcConnectWarning:) name:TJC_CONNECT_WARNING object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:instance selector:@selector(showEarnedCurrencyAlert:) name:TJC_CURRENCY_EARNED_NOTIFICATION object:nil];
 }
 
@@ -167,6 +168,10 @@
 
 - (void)tjcConnectFail:(NSNotification *)notifyObj {
     [self.tapJoyChannel invokeMethod:@"connectionFail" arguments:nil];
+}
+
+- (void)tjcConnectWarning:(NSNotification *)notifyObj {
+    [self.tapJoyChannel invokeMethod:@"connectionWarning" arguments:nil];
 }
 
 - (void)requestDidSucceed:(TJPlacement*)placement {

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'flutter_tapjoy'
-  s.version          = '1.0.3'
+  s.version          = '2.2.0'
   s.summary          = 'A plugin for Tapjoy for both Android & iOS'
   s.description      = 'A plugin for Tapjoy for both Android & iOS'
   s.homepage         = 'http://example.com'
