@@ -55,6 +55,7 @@ class TapJoyPlugin {
   TJAwardCurrencyHandler? _awardCurrencyHandler;
   TJGetCurrencyBalanceHandler? _getCurrencyBalanceHandler;
   TJEarnedCurrencyAlertHandler? _earnedCurrencyAlertHandler;
+  Completer<String?>? _setUserIdCompleter;
 
   TapJoyPlugin() {
     _channel.setMethodCallHandler(_handleMethod);
@@ -125,10 +126,16 @@ class TapJoyPlugin {
     await _createPlacement(tjPlacement);
   }
 
-  Future<void> setUserID({required String userID}) async {
-    await _channel.invokeMethod('setUserID', <String, dynamic>{
+  Future<String?> setUserID({required String userID}) async {
+    if (_setUserIdCompleter == null || _setUserIdCompleter!.isCompleted) {
+      _setUserIdCompleter = Completer<String?>();
+    }
+
+    _channel.invokeMethod('setUserID', <String, dynamic>{
       'userID': userID,
     });
+
+    return _setUserIdCompleter!.future;
   }
 
   Future<void> _createPlacement(TJPlacement tjPlacement) async {
@@ -139,6 +146,11 @@ class TapJoyPlugin {
 
   Future<void> _handleMethod(MethodCall call) async {
     switch (call.method) {
+      case 'setUserIdResult':
+        final error = call.arguments['error'] as String;
+        _setUserIdCompleter?.complete(error.isEmpty ? null : error);
+        break;
+
       case 'connectionSuccess':
         if (_connectionResultHandler != null) {
           _connectionResultHandler!(

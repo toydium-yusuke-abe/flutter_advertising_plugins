@@ -11,6 +11,7 @@ import com.tapjoy.TJConnectListener;
 import com.tapjoy.TJEarnedCurrencyListener;
 import com.tapjoy.TJError;
 import com.tapjoy.TJGetCurrencyBalanceListener;
+import com.tapjoy.TJSetUserIDListener;
 import com.tapjoy.TJPlacement;
 import com.tapjoy.TJPlacementListener;
 import com.tapjoy.TJSpendCurrencyListener;
@@ -86,7 +87,22 @@ public class FlutterTapjoyPlugin implements FlutterPlugin, MethodCallHandler, Ac
                 break;
             case "setUserID":
                 final String userID = call.argument("userID");
-                Tapjoy.setUserID(userID, null);
+
+                Tapjoy.setUserID(userID, new TJSetUserIDListener() {
+                    @Override
+                    public void onSetUserIDSuccess() {
+                        final Hashtable<String, Object> retValue = new Hashtable<>();
+                        retValue.put("error", "");
+                        invokeMethod("setUserIdResult", retValue, result);
+                    }
+
+                    @Override
+                    public void onSetUserIDFailure(String error) {
+                        final Hashtable<String, Object> retValue = new Hashtable<>();
+                        retValue.put("error", error);
+                        invokeMethod("setUserIdResult", retValue, result);
+                    }
+                });
                 break;
             case "isConnected":
                 result.success(Tapjoy.isConnected());

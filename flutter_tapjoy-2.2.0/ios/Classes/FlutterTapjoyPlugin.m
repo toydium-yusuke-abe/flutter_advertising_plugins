@@ -61,7 +61,10 @@
 
 - (void)setUserID:(NSDictionary *)dict result:(FlutterResult)result {
     NSString *userID = dict[@"userID"];
-    [Tapjoy setUserIDWithCompletion: userID completion:nil];
+    [Tapjoy setUserIDWithCompletion: userID completion:^(BOOL success, NSError *error) {
+        NSDictionary *args = @{ @"error": error ? error.description : @"" };
+        [self.tapJoyChannel invokeMethod:@"setUserIdResult" arguments:args];
+    }];
 }
 
 - (void)isConnected:(NSDictionary *)dict result:(FlutterResult)result {
@@ -115,7 +118,7 @@
         if (error) {
             args = @{ @"error" : error.description};
         } else {
-                       args = @{ @"currencyName" : parameters[@"currencyName"],@"balance":parameters[@"amount"]};
+            args = @{ @"currencyName" : parameters[@"currencyName"],@"balance":parameters[@"amount"]};
         }
         [self.tapJoyChannel invokeMethod:@"onSpendCurrencyResponse" arguments:args];
     }];
